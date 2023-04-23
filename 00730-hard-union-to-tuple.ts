@@ -1,5 +1,5 @@
 // ============= Test Cases =============
-import type { Equal, Expect } from './test-utils'
+import type { Equal, Expect, UnionToIntersection } from './test-utils'
 
 type ExtractValuesOfTuple<T extends any[]> = T[keyof T & number]
 
@@ -19,4 +19,8 @@ type cases = [
 
 
 // ============= Your Code Here =============
-type UnionToTuple<T> = any
+type GetLastFromUnion<T> = UnionToIntersection<(T extends any ? ((a: T) => void) : never)> extends ((a: infer I) => void) ? I : never
+type UnionToTuple<T> = [T] extends [never] ? [] : [...UnionToTuple<Exclude<T, GetLastFromUnion<T>>>, GetLastFromUnion<T>]
+let a: ((a: string) => string) & ((a: number) => boolean) extends (a: infer I) => infer R ? [I, R] : never
+//  ^?
+// 函数的相交类型相当于函数重载，最后起作用的是最后一个类型 fn1 & fn2 & fn3 = fn3
