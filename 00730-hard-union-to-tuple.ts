@@ -24,3 +24,17 @@ type UnionToTuple<T> = [T] extends [never] ? [] : [...UnionToTuple<Exclude<T, Ge
 let a: ((a: string) => string) & ((a: number) => boolean) extends (a: infer I) => infer R ? [I, R] : never
 //  ^?
 // 函数的相交类型相当于函数重载，最后起作用的是最后一个类型 fn1 & fn2 & fn3 = fn3
+
+let b: never extends any ? 1 : 2
+//  ^?
+
+let c: never extends any ? ((a: never) => void) : never;
+//  ^?
+type Test<T> = T extends any ? ((a: T) => void) : never;
+type Test3<T> = T extends any ? 1 : 2;
+let e: Test<never>
+//  ^?
+let f: Test3<never>
+//  ^?
+let d: Equal<(a: never) => void, never>
+//  ^?
